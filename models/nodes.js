@@ -31,7 +31,6 @@ const NodesSchema = new Schema({
         type : Boolean, 
         default: false
     },
-    geometry: GeoSchema
 });
 
 const Nodes = mongoose.model('nodes', NodesSchema);
