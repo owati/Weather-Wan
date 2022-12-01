@@ -27,6 +27,12 @@ const NodesSchema = new Schema({
     humidity: {
         type: String
     },
+    bar_pressure : {
+        type : String,
+    },
+    vapor_pressure : {
+        type : String
+    },
     available: {
         type : Boolean, 
         default: false
