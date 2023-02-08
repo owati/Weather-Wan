@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const {WebSocketServer} = require('ws');
 
-const {Nodes} = require('./models/nodes')
+const {Nodes, NodeHistoryState} = require('./models/nodes')
 
 //set up express app 
 const app = express();
@@ -35,7 +35,7 @@ updateSocket.on('connection', (socket) => {
     setInterval(
         async function () {
             // console.log(socket)
-            const nodes = await Nodes.findById('6387e1a821033c5622c0f379');
+            const nodes = await NodeHistoryState.find({ node : '6387e1a821033c5622c0f379'});
             socket.send(JSON.stringify({
                 data : nodes
             }))
