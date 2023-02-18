@@ -8,8 +8,11 @@ router.get('/nodes', function(req,res,next){
         Nodes.find({node : req.query.name}).then(val => res.status(200).send({data : val}));
         return;
     }
-    Nodes.aggregate([{ $geoNear: { near: {type: 'Point', coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)]}, spherical: true, maxDistance: 100000, distanceField: "dist.calculated" } }]).then(function(results){ res.send(results); });
-    
+    if (req.query.lat && req.query.lng) {
+        Nodes.aggregate([{ $geoNear: { near: {type: 'Point', coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)]}, spherical: true, maxDistance: 100000, distanceField: "dist.calculated" } }])
+        .then(function(results){ res.send(results); });
+    }
+    Nodes.find().then(val => res.send({data : val}))
 });
 
 
