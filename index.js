@@ -25,8 +25,10 @@ app.use('/api', require('./routes/api'));
 
 const updateSocket = new WebSocketServer({noServer : true});
 
-updateSocket.on('connection', (socket) => {
-    console.log("The socket has been connected");
+updateSocket.on('connection', (socket, req) => {
+    const id = req.url.split('/')[2];
+
+    console.log("The socket has been connecte => ", id);
 
     // console.log(socket)
     socket.send(JSON.stringify({
@@ -35,7 +37,7 @@ updateSocket.on('connection', (socket) => {
     setInterval(
         async function () {
             // console.log(socket)
-            const nodes = await NodeHistoryState.find({ node : '6387e1a821033c5622c0f379'});
+            const nodes = await NodeHistoryState.find({ node : id});
             socket.send(JSON.stringify({
                 data : nodes
             }))
@@ -56,11 +58,12 @@ app.use(function(err,req,res,next){
 //list for requests 
 const server = app.listen(process.env.port || 4000, function(){
     console.log('now listening for requests');
+    console.log('WTF')
 });
 
 server.on('upgrade', (req, socket, head) => {
     const path = req.url.split('/')[1];
-
+    console.log(path)
     if (path === 'ws') {
         updateSocket.handleUpgrade(req, socket, head, ws => {
             updateSocket.emit('connection', ws, req);
