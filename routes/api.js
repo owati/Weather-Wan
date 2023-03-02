@@ -61,9 +61,19 @@ router.post('/nodes', async function(req,res,next){
 router.get('/nodes/history/:id', async function (req, res) {
     try {
         const [history] = await NodeHistoryState.find({node : req.params.id})
+        const {start_date, end_date} = req.query;
         if (!history)
             return res.status(404)
                         .send({message : "The history was not found"})
+        const start = new Date(start_date);
+        const end = new Date(end_date);
+
+        if (start.toString() !== 'Invalid Date' &&
+            end.toString() !== 'Invalid Date'
+        ) {
+            history.history = history.history.filter(({date}) => (date >= start) && (date <= end)
+            )
+        }
         res.status(200)
             .send({
                 message : 'The data was fetched successfully',
