@@ -58,7 +58,26 @@ router.post('/nodes', async function(req,res,next){
          
 });
 
-router.put('/nodes/history/:id', async function (req, res) {
+router.get('/nodes/history/:id', async function (req, res) {
+    try {
+        const [history] = await NodeHistoryState.find({node : req.params.id})
+        if (!history)
+            return res.status(404)
+                        .send({message : "The history was not found"})
+        res.status(200)
+            .send({
+                message : 'The data was fetched successfully',
+                data : history
+            })
+    } catch (e) {
+        res.status(400)
+            .send({
+                message : e.message
+            })
+    }
+})
+
+router.post('/nodes/history/:id', async function (req, res) {
     console.log('Updating the Node history');
     try {
         const {id} = req.params;
@@ -71,24 +90,24 @@ router.put('/nodes/history/:id', async function (req, res) {
                       .send({message : 'The id sent is invalid'});
                       
         let [nodehistory] = await  NodeHistoryState.find({node : id});
-        if (!nodehistory)
-            nodehistory = await NodeHistoryState.create({node : id});
-        console.log(nodehistory, node, "=> node history")
-        if (nodehistory.history?.length < 10) {
-            nodehistory.history = [...nodehistory.history, {...body, date : Date.now()}];
-            await nodehistory.save();
-            return res.status(200)
-                        .send({
-                            message : 'The history is updated',
-                            data : nodehistory
-                        })
-        }
+        // if (!nodehistory)
+        //     nodehistory = await NodeHistoryState.create({node : id});
+        // console.log(nodehistory, node, "=> node history")
+        // if (nodehistory.history?.length < 10) {
+        //     nodehistory.history = [...nodehistory.history, {...body, date : Date.now()}];
+        //     await nodehistory.save();
+        //     return res.status(200)
+        //                 .send({
+        //                     message : 'The history is updated',
+        //                     data : nodehistory
+        //                 })
+        // }
 
-        const history = [...nodehistory.history];
-        const randNum = Math.floor(Math.random() * 9) + 1;
-        history.splice(randNum, randNum);
-        history.push({...body, date : Date.now()})
-        nodehistory.history = history;
+        // const history = [...nodehistory.history];
+        // const randNum = Math.floor(Math.random() * 9) + 1;
+        // history.splice(randNum, randNum);
+
+        nodehistory.history.push({...body, date : Date.now()})
         await nodehistory.save();
 
         return res.status(200)
