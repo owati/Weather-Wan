@@ -24,6 +24,10 @@ const NodesSchema = new Schema({
     history : {
         type : [NodeHistory],
         default : []
+    },
+    isactive : {
+        type : Boolean,
+        default : false
     }
 });
 
