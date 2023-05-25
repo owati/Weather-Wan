@@ -13,7 +13,7 @@
     "ws": "^8.11.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node api.js && node index.js"
   },
   "repository": {
     "type": "git",
